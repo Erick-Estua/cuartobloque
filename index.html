@@ -1,0 +1,844 @@
+<!doctype html>
+<html lang="es">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Plataforma Educativa de Informática</title>
+  <script src="/_sdk/element_sdk.js"></script>
+  <style>
+        body {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100%;
+        }
+
+        html {
+            height: 100%;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: white;
+            min-height: calc(100% - 40px);
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            border-radius: 15px;
+            color: white;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 2.5rem;
+            font-weight: bold;
+        }
+
+        .header p {
+            margin: 10px 0 0 0;
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            margin-bottom: 20px;
+            border-bottom: 3px solid #e0e0e0;
+            padding-bottom: 10px;
+        }
+
+        .tab {
+            padding: 12px 20px;
+            background: #f5f5f5;
+            border: none;
+            border-radius: 8px 8px 0 0;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            flex: 1;
+            min-width: 150px;
+        }
+
+        .tab:hover {
+            background: #e0e0e0;
+        }
+
+        .tab.active {
+            background: #4facfe;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .content {
+            display: none;
+            padding: 30px;
+            background: #fafafa;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .content.active {
+            display: block;
+        }
+
+        .content h2 {
+            color: #333;
+            font-size: 2rem;
+            margin-bottom: 20px;
+            border-bottom: 3px solid #4facfe;
+            padding-bottom: 10px;
+        }
+
+        .content p {
+            line-height: 1.8;
+            font-size: 1.1rem;
+            color: #555;
+            margin-bottom: 15px;
+            text-align: justify;
+        }
+
+        .content ul {
+            margin: 15px 0;
+            padding-left: 25px;
+        }
+
+        .content li {
+            margin-bottom: 8px;
+            line-height: 1.6;
+            color: #555;
+        }
+
+        .quiz-section {
+            margin-top: 40px;
+            padding: 25px;
+            background: white;
+            border-radius: 10px;
+            border: 2px solid #4facfe;
+        }
+
+        .quiz-section h3 {
+            color: #4facfe;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .question {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #f9f9f9;
+            border-radius: 8px;
+            border-left: 4px solid #4facfe;
+        }
+
+        .question p {
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .question label {
+            display: block;
+            margin: 8px 0;
+            cursor: pointer;
+            padding: 5px;
+            border-radius: 4px;
+            transition: background 0.2s;
+        }
+
+        .question label:hover {
+            background: #e8f4fd;
+        }
+
+        .question input[type="radio"] {
+            margin-right: 8px;
+        }
+
+        .evaluate-btn {
+            display: block;
+            width: 200px;
+            margin: 20px auto;
+            padding: 15px;
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .evaluate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(79, 172, 254, 0.4);
+        }
+
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .result.excellent {
+            background: #d4edda;
+            color: #155724;
+            border: 2px solid #c3e6cb;
+        }
+
+        .result.good {
+            background: #fff3cd;
+            color: #856404;
+            border: 2px solid #ffeaa7;
+        }
+
+        .result.needs-improvement {
+            background: #f8d7da;
+            color: #721c24;
+            border: 2px solid #f5c6cb;
+        }
+
+        @media (max-width: 768px) {
+            .tabs {
+                flex-direction: column;
+            }
+
+            .tab {
+                min-width: auto;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .content {
+                padding: 20px;
+            }
+        }
+    </style>
+  <style>@view-transition { navigation: auto; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+  <script src="https://cdn.tailwindcss.com" type="text/javascript"></script>
+ </head>
+ <body>
+  <main class="container">
+   <header class="header">
+    <h1 id="main-title">Plataforma Educativa de Informática</h1>
+    <p id="subtitle">Aprende los conceptos fundamentales de la informática de manera interactiva</p>
+   </header>
+   <nav class="tabs"><button class="tab active" onclick="showTab('sistemas-operativos')">Sistemas Operativos</button> <button class="tab" onclick="showTab('tipos-so')">Tipos de SO</button> <button class="tab" onclick="showTab('partes-so')">Partes de SO</button> <button class="tab" onclick="showTab('servidores')">Servidores LAN</button> <button class="tab" onclick="showTab('ventajas-servidores')">Ventajas Servidores</button> <button class="tab" onclick="showTab('drivers')">Drivers</button> <button class="tab" onclick="showTab('mantenimiento-hw')">Mantenimiento HW</button> <button class="tab" onclick="showTab('mantenimiento-sw')">Mantenimiento SW</button> <button class="tab" onclick="showTab('interfaces')">Interfaces E/S</button> <button class="tab" onclick="showTab('unidades-medida')">Unidades Digitales</button> <button class="tab" onclick="showTab('sistema-binario')">Sistema Binario</button>
+   </nav>
+   <section id="sistemas-operativos" class="content active">
+    <h2>Sistemas Operativos</h2>
+    <p>Un sistema operativo (SO) es el software más importante de una computadora. Es como el "cerebro" que controla y coordina todas las actividades del equipo. Sin él, tu computadora sería como un carro sin motor: tendría todas las partes, pero no podría funcionar.</p>
+    <p>El sistema operativo actúa como un intermediario entre tú (el usuario) y el hardware (las partes físicas) de la computadora. Cuando haces clic en un programa, el SO se encarga de abrirlo. Cuando guardas un archivo, el SO lo almacena en el lugar correcto del disco duro.</p>
+    <p>Algunas funciones principales del sistema operativo incluyen:</p>
+    <ul>
+     <li><strong>Gestión de archivos:</strong> Organiza y guarda tus documentos, fotos y programas</li>
+     <li><strong>Gestión de memoria:</strong> Decide qué programas pueden usar la memoria RAM</li>
+     <li><strong>Interfaz de usuario:</strong> Te permite interactuar con la computadora mediante ventanas, íconos y menús</li>
+     <li><strong>Seguridad:</strong> Protege tu información y controla quién puede acceder a qué</li>
+     <li><strong>Gestión de dispositivos:</strong> Controla impresoras, teclado, mouse y otros periféricos</li>
+    </ul>
+    <p>Los sistemas operativos más conocidos son Windows (de Microsoft), macOS (de Apple) y Linux (de código abierto). Cada uno tiene sus propias características, pero todos cumplen la misma función básica: hacer que tu computadora sea útil y fácil de usar.</p>
+    <div class="quiz-section">
+     <h3>Evaluación - Sistemas Operativos (5 puntos)</h3>
+     <div class="question">
+      <p>1. ¿Qué es un sistema operativo?</p><label><input type="radio" name="q1" value="a"> Un programa para navegar en internet</label> <label><input type="radio" name="q1" value="b"> El software que controla y coordina todas las actividades de la computadora</label> <label><input type="radio" name="q1" value="c"> Un dispositivo de hardware</label> <label><input type="radio" name="q1" value="d"> Una aplicación para editar documentos</label>
+     </div>
+     <div class="question">
+      <p>2. ¿Cuál de estas NO es una función del sistema operativo?</p><label><input type="radio" name="q2" value="a"> Gestión de archivos</label> <label><input type="radio" name="q2" value="b"> Gestión de memoria</label> <label><input type="radio" name="q2" value="c"> Crear páginas web</label> <label><input type="radio" name="q2" value="d"> Gestión de dispositivos</label>
+     </div>
+     <div class="question">
+      <p>3. ¿Qué hace la gestión de memoria del sistema operativo?</p><label><input type="radio" name="q3" value="a"> Guarda archivos en el disco duro</label> <label><input type="radio" name="q3" value="b"> Decide qué programas pueden usar la memoria RAM</label> <label><input type="radio" name="q3" value="c"> Controla la impresora</label> <label><input type="radio" name="q3" value="d"> Navega en internet</label>
+     </div>
+     <div class="question">
+      <p>4. ¿Cuáles son los tres sistemas operativos más conocidos mencionados?</p><label><input type="radio" name="q4" value="a"> Windows, Android, iOS</label> <label><input type="radio" name="q4" value="b"> Windows, macOS, Linux</label> <label><input type="radio" name="q4" value="c"> Linux, Chrome OS, Ubuntu</label> <label><input type="radio" name="q4" value="d"> macOS, Android, Windows</label>
+     </div>
+     <div class="question">
+      <p>5. ¿Qué función cumple la interfaz de usuario del sistema operativo?</p><label><input type="radio" name="q5" value="a"> Protege la información</label> <label><input type="radio" name="q5" value="b"> Guarda archivos</label> <label><input type="radio" name="q5" value="c"> Te permite interactuar con la computadora mediante ventanas, íconos y menús</label> <label><input type="radio" name="q5" value="d"> Controla la memoria RAM</label>
+     </div><button class="evaluate-btn" onclick="evaluateQuiz('sistemas-operativos', ['b','c','b','b','c'])">Evaluar</button>
+     <div id="result-sistemas-operativos" class="result" style="display: none;"></div>
+    </div>
+   </section>
+   <section id="tipos-so" class="content">
+    <h2>Tipos de Sistemas Operativos</h2>
+    <p>Los sistemas operativos se pueden clasificar de diferentes maneras según sus características y el tipo de dispositivos para los que están diseñados. Es como tener diferentes tipos de vehículos para diferentes necesidades: un carro para la ciudad, una camioneta para el campo, o una motocicleta para moverse rápido.</p>
+    <p><strong>Según el número de usuarios:</strong></p>
+    <ul>
+     <li><strong>Monousuario:</strong> Solo permite que una persona use la computadora a la vez. Ejemplo: Windows en tu computadora personal.</li>
+     <li><strong>Multiusuario:</strong> Permite que varias personas usen la misma computadora al mismo tiempo. Ejemplo: servidores de empresas.</li>
+    </ul>
+    <p><strong>Según el número de tareas:</strong></p>
+    <ul>
+     <li><strong>Monotarea:</strong> Solo puede ejecutar un programa a la vez. Como los sistemas operativos muy antiguos.</li>
+     <li><strong>Multitarea:</strong> Puede ejecutar varios programas al mismo tiempo. Como cuando tienes abierto el navegador, música y un documento a la vez.</li>
+    </ul>
+    <p><strong>Según el tipo de dispositivo:</strong></p>
+    <ul>
+     <li><strong>Sistemas de escritorio:</strong> Windows, macOS, Linux Ubuntu - para computadoras personales</li>
+     <li><strong>Sistemas móviles:</strong> Android, iOS - para teléfonos y tabletas</li>
+     <li><strong>Sistemas de servidor:</strong> Windows Server, Linux CentOS - para computadoras que dan servicios a otras</li>
+     <li><strong>Sistemas embebidos:</strong> Para dispositivos específicos como smart TVs, routers, electrodomésticos inteligentes</li>
+    </ul>
+    <p>Cada tipo está optimizado para su propósito específico. Por ejemplo, Android está diseñado para pantallas táctiles y batería limitada, mientras que Windows Server está diseñado para manejar muchos usuarios simultáneamente.</p>
+    <div class="quiz-section">
+     <h3>Evaluación - Tipos de Sistemas Operativos (5 puntos)</h3>
+     <div class="question">
+      <p>1. ¿Qué caracteriza a un sistema operativo monousuario?</p><label><input type="radio" name="q1-tipos" value="a"> Puede ejecutar varios programas a la vez</label> <label><input type="radio" name="q1-tipos" value="b"> Solo permite que una persona use la computadora a la vez</label> <label><input type="radio" name="q1-tipos" value="c"> Es solo para teléfonos móviles</label> <label><input type="radio" name="q1-tipos" value="d"> No puede guardar archivos</label>
+     </div>
+     <div class="question">
+      <p>2. ¿Cuál es un ejemplo de sistema operativo multitarea?</p><label><input type="radio" name="q2-tipos" value="a"> Un sistema que solo abre un programa</label> <label><input type="radio" name="q2-tipos" value="b"> Windows moderno que permite tener abierto navegador, música y documentos simultáneamente</label> <label><input type="radio" name="q2-tipos" value="c"> Un sistema que no tiene interfaz gráfica</label> <label><input type="radio" name="q2-tipos" value="d"> Un sistema solo para servidores</label>
+     </div>
+     <div class="question">
+      <p>3. ¿Cuáles son ejemplos de sistemas operativos móviles?</p><label><input type="radio" name="q3-tipos" value="a"> Windows y macOS</label> <label><input type="radio" name="q3-tipos" value="b"> Linux y Ubuntu</label> <label><input type="radio" name="q3-tipos" value="c"> Android y iOS</label> <label><input type="radio" name="q3-tipos" value="d"> Windows Server y Linux CentOS</label>
+     </div>
+     <div class="question">
+      <p>4. ¿Para qué están diseñados los sistemas embebidos?</p><label><input type="radio" name="q4-tipos" value="a"> Para computadoras personales</label> <label><input type="radio" name="q4-tipos" value="b"> Para dispositivos específicos como smart TVs y electrodomésticos inteligentes</label> <label><input type="radio" name="q4-tipos" value="c"> Solo para teléfonos</label> <label><input type="radio" name="q4-tipos" value="d"> Para navegar en internet</label>
+     </div>
+     <div class="question">
+      <p>5. ¿Qué característica tiene un sistema multiusuario?</p><label><input type="radio" name="q5-tipos" value="a"> Solo funciona en teléfonos</label> <label><input type="radio" name="q5-tipos" value="b"> No puede ejecutar programas</label> <label><input type="radio" name="q5-tipos" value="c"> Permite que varias personas usen la misma computadora al mismo tiempo</label> <label><input type="radio" name="q5-tipos" value="d"> Solo guarda un archivo a la vez</label>
+     </div><button class="evaluate-btn" onclick="evaluateQuiz('tipos-so', ['b','b','c','b','c'])">Evaluar</button>
+     <div id="result-tipos-so" class="result" style="display: none;"></div>
+    </div>
+   </section>
+   <section id="partes-so" class="content">
+    <h2>Partes de un Sistema Operativo</h2>
+    <p>Un sistema operativo está compuesto por varias partes que trabajan juntas, como los órganos del cuerpo humano. Cada parte tiene una función específica, pero todas colaboran para que la computadora funcione correctamente.</p>
+    <p><strong>El Núcleo o Kernel:</strong></p>
+    <p>Es el "corazón" del sistema operativo. Se encarga de las tareas más importantes y básicas como comunicarse directamente con el hardware, gestionar la memoria y controlar los procesos. Es la parte que nunca ves, pero siempre está trabajando.</p>
+    <p><strong>La Interfaz de Usuario:</strong></p>
+    <p>Es la parte que sí puedes ver y tocar. Incluye las ventanas, íconos, menús y botones que usas para interactuar con la computadora. Puede ser gráfica (como Windows con ventanas y mouse) o de texto (como las pantallas negras con comandos escritos).</p>
+    <p><strong>El Sistema de Archivos:</strong></p>
+    <p>Es como el "bibliotecario" de tu computadora. Se encarga de organizar, guardar y encontrar todos tus archivos y carpetas. Decide dónde se guarda cada cosa y cómo recuperarla cuando la necesitas.</p>
+    <p><strong>Los Controladores de Dispositivos (Drivers):</strong></p>
+    <p>Son como "traductores" que permiten que el sistema operativo se comunique con diferentes dispositivos como impresoras, cámaras, teclados o mouse. Cada dispositivo necesita su propio "traductor".</p>
+    <p><strong>Gestores de Procesos y Memoria:</strong></p>
+    <p>El gestor de procesos decide qué programas pueden ejecutarse y cuándo, como un director de orquesta que coordina a todos los músicos. El gestor de memoria decide qué programas pueden usar la RAM y cuánta pueden usar.</p>
+    <p><strong>Servicios del Sistema:</strong></p>
+    <p>Son programas especiales que trabajan en segundo plano para mantener la computadora funcionando bien, como antivirus, actualizaciones automáticas, y servicios de red.</p>
+    <div class="quiz-section">
+     <h3>Evaluación - Partes de un Sistema Operativo (5 puntos)</h3>
+     <div class="question">
+      <p>1. ¿Cuál es la función principal del núcleo o kernel?</p><label><input type="radio" name="q1-partes" value="a"> Mostrar las ventanas e íconos</label> <label><input type="radio" name="q1-partes" value="b"> Comunicarse directamente con el hardware y gestionar la memoria</label> <label><input type="radio" name="q1-partes" value="c"> Organizar archivos y carpetas</label> <label><input type="radio" name="q1-partes" value="d"> Conectarse a internet</label>
+     </div>
+     <div class="question">
+      <p>2. ¿Qué incluye la interfaz de usuario?</p><label><input type="radio" name="q2-partes" value="a"> Solo el hardware de la computadora</label> <label><input type="radio" name="q2-partes" value="b"> Las ventanas, íconos, menús y botones que usas para interactuar</label> <label><input type="radio" name="q2-partes" value="c"> Solo la memoria RAM</label> <label><input type="radio" name="q2-partes" value="d"> Los cables internos</label>
+     </div>
+     <div class="question">
+      <p>3. ¿Cuál es la función del sistema de archivos?</p><label><input type="radio" name="q3-partes" value="a"> Controlar el mouse</label> <label><input type="radio" name="q3-partes" value="b"> Organizar, guardar y encontrar todos los archivos y carpetas</label> <label><input type="radio" name="q3-partes" value="c"> Mostrar colores en la pantalla</label> <label><input type="radio" name="q3-partes" value="d"> Reproducir sonidos</label>
+     </div>
+     <div class="question">
+      <p>4. ¿Qué hacen los controladores de dispositivos (drivers)?</p><label><input type="radio" name="q4-partes" value="a"> Guardan archivos</label> <label><input type="radio" name="q4-partes" value="b"> Actúan como traductores entre el SO y dispositivos como impresoras o cámaras</label> <label><input type="radio" name="q4-partes" value="c"> Crean ventanas</label> <label><input type="radio" name="q4-partes" value="d"> Borran virus</label>
+     </div>
+     <div class="question">
+      <p>5. ¿Qué son los servicios del sistema?</p><label><input type="radio" name="q5-partes" value="a"> Programas que solo funcionan cuando los abres</label> <label><input type="radio" name="q5-partes" value="b"> Programas especiales que trabajan en segundo plano para mantener la computadora funcionando</label> <label><input type="radio" name="q5-partes" value="c"> Solo los juegos instalados</label> <label><input type="radio" name="q5-partes" value="d"> Las carpetas del escritorio</label>
+     </div><button class="evaluate-btn" onclick="evaluateQuiz('partes-so', ['b','b','b','b','b'])">Evaluar</button>
+     <div id="result-partes-so" class="result" style="display: none;"></div>
+    </div>
+   </section>
+   <section id="servidores" class="content">
+    <h2>Servidores de Área Local</h2>
+    <p>Un servidor de área local (LAN Server) es una computadora especial que proporciona servicios y recursos a otras computadoras dentro de una red local, como la de una escuela, oficina o casa. Imagínalo como el "bibliotecario principal" de una biblioteca que ayuda a todos los visitantes a encontrar lo que necesitan.</p>
+    <p>Los servidores son más potentes que las computadoras normales porque deben atender a muchos usuarios al mismo tiempo. Es como la diferencia entre una cocina casera y la cocina de un restaurante: ambas cocinan, pero una debe servir a muchas más personas.</p>
+    <p><strong>Tipos de servidores comunes en redes locales:</strong></p>
+    <ul>
+     <li><strong>Servidor de archivos:</strong> Guarda y comparte documentos, fotos y otros archivos que todos pueden usar</li>
+     <li><strong>Servidor de impresión:</strong> Controla las impresoras y organiza las tareas de impresión de todos los usuarios</li>
+     <li><strong>Servidor web:</strong> Aloja páginas web que se pueden ver desde las computadoras de la red</li>
+     <li><strong>Servidor de correo:</strong> Maneja el envío y recepción de emails dentro de la organización</li>
+     <li><strong>Servidor de base de datos:</strong> Almacena y organiza grandes cantidades de información de manera segura</li>
+    </ul>
+    <p><strong>Características importantes:</strong></p>
+    <ul>
+     <li>Funcionan las 24 horas del día, los 7 días de la semana</li>
+     <li>Tienen sistemas de respaldo para no perder información</li>
+     <li>Pueden atender a muchos usuarios simultáneamente</li>
+     <li>Tienen medidas de seguridad especiales para proteger la información</li>
+     <li>Se administran de forma centralizada por especialistas en informática</li>
+    </ul>
+    <p>En una escuela, por ejemplo, el servidor permite que todos los estudiantes accedan a los mismos archivos educativos, compartan impresoras, y que los maestros gestionen las tareas y calificaciones desde un lugar central y seguro.</p>
+    <div class="quiz-section">
+     <h3>Evaluación - Servidores de Área Local (5 puntos)</h3>
+     <div class="question">
+      <p>1. ¿Qué es un servidor de área local?</p><label><input type="radio" name="q1-servidores" value="a"> Una computadora normal para juegos</label> <label><input type="radio" name="q1-servidores" value="b"> Una computadora especial que proporciona servicios a otras computadoras en una red local</label> <label><input type="radio" name="q1-servidores" value="c"> Un programa de internet</label> <label><input type="radio" name="q1-servidores" value="d"> Un tipo de impresora</label>
+     </div>
+     <div class="question">
+      <p>2. ¿Cuál es la función de un servidor de archivos?</p><label><input type="radio" name="q2-servidores" value="a"> Solo imprimir documentos</label> <label><input type="radio" name="q2-servidores" value="b"> Guardar y compartir documentos, fotos y otros archivos que todos pueden usar</label> <label><input type="radio" name="q2-servidores" value="c"> Solo enviar emails</label> <label><input type="radio" name="q2-servidores" value="d"> Reproducir música</label>
+     </div>
+     <div class="question">
+      <p>3. ¿Por qué los servidores son más potentes que las computadoras normales?</p><label><input type="radio" name="q3-servidores" value="a"> Porque son más caros</label> <label><input type="radio" name="q3-servidores" value="b"> Porque deben atender a muchos usuarios al mismo tiempo</label> <label><input type="radio" name="q3-servidores" value="c"> Porque tienen más colores</label> <label><input type="radio" name="q3-servidores" value="d"> Porque son más grandes físicamente</label>
+     </div>
+     <div class="question">
+      <p>4. ¿Cuántas horas al día funcionan típicamente los servidores?</p><label><input type="radio" name="q4-servidores" value="a"> Solo 8 horas</label> <label><input type="radio" name="q4-servidores" value="b"> 12 horas</label> <label><input type="radio" name="q4-servidores" value="c"> 24 horas del día, los 7 días de la semana</label> <label><input type="radio" name="q4-servidores" value="d"> Solo cuando alguien los enciende</label>
+     </div>
+     <div class="question">
+      <p>5. ¿Qué hace un servidor de impresión?</p><label><input type="radio" name="q5-servidores" value="a"> Solo guarda archivos</label> <label><input type="radio" name="q5-servidores" value="b"> Controla las impresoras y organiza las tareas de impresión de todos los usuarios</label> <label><input type="radio" name="q5-servidores" value="c"> Solo navega en internet</label> <label><input type="radio" name="q5-servidores" value="d"> Reproduce videos</label>
+     </div><button class="evaluate-btn" onclick="evaluateQuiz('servidores', ['b','b','b','c','b'])">Evaluar</button>
+     <div id="result-servidores" class="result" style="display: none;"></div>
+    </div>
+   </section>
+   <section id="ventajas-servidores" class="content">
+    <h2>Ventajas del Uso de Servidores en Centros Educativos</h2>
+    <p>Los servidores en las escuelas y universidades ofrecen múltiples beneficios que mejoran significativamente la experiencia educativa. Es como tener una biblioteca, centro de recursos y sistema de comunicación todo en uno, disponible para toda la comunidad educativa.</p>
+    <p><strong>Centralización de Recursos:</strong></p>
+    <p>Todos los materiales educativos, libros digitales, videos y software están en un lugar central. Los estudiantes pueden acceder a los mismos recursos desde cualquier computadora del centro educativo, sin importar en qué aula estén.</p>
+    <p><strong>Compartir Recursos Costosos:</strong></p>
+    <p>En lugar de comprar una impresora para cada aula, el servidor permite que todas las computadoras compartan las mismas impresoras, escáneres y otros equipos costosos. Esto ahorra mucho dinero a la institución.</p>
+    <p><strong>Gestión Centralizada de Usuarios:</strong></p>
+    <p>Los administradores pueden crear cuentas para estudiantes y profesores desde un solo lugar, controlar qué puede hacer cada usuario, y mantener la seguridad de toda la red de manera eficiente.</p>
+    <p><strong>Respaldo y Seguridad de Información:</strong></p>
+    <p>Toda la información importante se guarda en el servidor con copias de seguridad automáticas. Si una computadora se daña, los trabajos y archivos de los estudiantes no se pierden porque están seguros en el servidor.</p>
+    <p><strong>Colaboración Mejorada:</strong></p>
+    <p>Los estudiantes pueden trabajar en proyectos grupales compartiendo archivos fácilmente, los profesores pueden distribuir tareas y materiales instantáneamente a todos sus estudiantes.</p>
+    <p><strong>Control de Acceso a Internet:</strong></p>
+    <p>El servidor puede filtrar contenido inapropiado y controlar qué sitios web pueden visitar los estudiantes, creando un ambiente de aprendizaje seguro y enfocado.</p>
+    <p><strong>Ahorro de Costos:</strong></p>
+    <p>Reduce la necesidad de comprar software para cada computadora individual, permite usar computadoras menos potentes como "terminales", y facilita el mantenimiento técnico.</p>
+    <p><strong>Acceso Remoto:</strong></p>
+    <p>Los estudiantes y profesores pueden acceder a sus archivos y recursos educativos desde casa, extendiendo el aprendizaje más allá del horario escolar.</p>
+    <div class="quiz-section">
+     <h3>Evaluación - Ventajas de Servidores en Centros Educativos (5 puntos)</h3>
+     <div class="question">
+      <p>1. ¿Qué significa "centralización de recursos" en un centro educativo?</p><label><input type="radio" name="q1-ventajas" value="a"> Que cada estudiante tiene su propia computadora</label> <label><input type="radio" name="q1-ventajas" value="b"> Que todos los materiales educativos están en un lugar central accesible desde cualquier computadora</label> <label><input type="radio" name="q1-ventajas" value="c"> Que solo el director puede usar las computadoras</label> <label><input type="radio" name="q1-ventajas" value="d"> Que no se puede compartir información</label>
+     </div>
+     <div class="question">
+      <p>2. ¿Cómo ayudan los servidores a ahorrar dinero en equipos?</p><label><input type="radio" name="q2-ventajas" value="a"> Haciendo que las computadoras sean más baratas</label> <label><input type="radio" name="q2-ventajas" value="b"> Permitiendo que todas las computadoras compartan impresoras y otros equipos costosos</label> <label><input type="radio" name="q2-ventajas" value="c"> Eliminando la necesidad de electricidad</label> <label><input type="radio" name="q2-ventajas" value="d"> Haciendo que no se necesiten computadoras</label>
+     </div>
+     <div class="question">
+      <p>3. ¿Qué ventaja ofrece el respaldo automático en servidores?</p><label><input type="radio" name="q3-ventajas" value="a"> Hace que las computadoras sean más rápidas</label> <label><input type="radio" name="q3-ventajas" value="b"> Los trabajos y archivos no se pierden si una computadora se daña</label> <label><input type="radio" name="q3-ventajas" value="c"> Permite jugar videojuegos</label> <label><input type="radio" name="q3-ventajas" value="d"> Cambia el color de las pantallas</label>
+     </div>
+     <div class="question">
+      <p>4. ¿Cómo mejoran los servidores la colaboración entre estudiantes?</p><label><input type="radio" name="q4-ventajas" value="a"> Eliminando la necesidad de trabajar en grupo</label> <label><input type="radio" name="q4-ventajas" value="b"> Permitiendo compartir archivos fácilmente para proyectos grupales</label> <label><input type="radio" name="q4-ventajas" value="c"> Haciendo que cada estudiante trabaje solo</label> <label><input type="radio" name="q4-ventajas" value="d"> Prohibiendo el uso de internet</label>
+     </div>
+     <div class="question">
+      <p>5. ¿Qué permite el acceso remoto en servidores educativos?</p><label><input type="radio" name="q5-ventajas" value="a"> Solo trabajar en la escuela</label> <label><input type="radio" name="q5-ventajas" value="b"> Acceder a archivos y recursos educativos desde casa</label> <label><input type="radio" name="q5-ventajas" value="c"> Usar solo papel y lápiz</label> <label><input type="radio" name="q5-ventajas" value="d"> Eliminar las tareas</label>
+     </div><button class="evaluate-btn" onclick="evaluateQuiz('ventajas-servidores', ['b','b','b','b','b'])">Evaluar</button>
+     <div id="result-ventajas-servidores" class="result" style="display: none;"></div>
+    </div>
+   </section>
+   <section id="drivers" class="content">
+    <h2>Drivers o Controladores</h2>
+    <p>Los drivers o controladores son programas especiales que actúan como "traductores" entre el sistema operativo de tu computadora y los dispositivos de hardware (como impresoras, cámaras, teclados, etc.). Sin ellos, tu computadora no sabría cómo comunicarse con estos dispositivos.</p>
+    <p>Imagina que tienes un amigo que habla un idioma diferente al tuyo. Para comunicarte con él, necesitas un traductor. Los drivers funcionan exactamente así: traducen las instrucciones del sistema operativo al "idioma" que entiende cada dispositivo específico.</p>
+    <p><strong>¿Por qué son necesarios los drivers?</strong></p>
+    <p>Cada dispositivo tiene su propia forma de funcionar. Una impresora Canon funciona diferente a una HP, y una cámara web tiene comandos distintos a un mouse. Los drivers contienen las instrucciones específicas para que el sistema operativo pueda controlar correctamente cada dispositivo.</p>
+    <p><strong>Tipos de drivers comunes:</strong></p>
+    <ul>
+     <li><strong>Drivers de video:</strong> Para tarjetas gráficas (NVIDIA, AMD, Intel)</li>
+     <li><strong>Drivers de audio:</strong> Para tarjetas de sonido y altavoces</li>
+     <li><strong>Drivers de impresora:</strong> Para diferentes marcas y modelos de impresoras</li>
+     <li><strong>Drivers de red:</strong> Para tarjetas de red y WiFi</li>
+     <li><strong>Drivers USB:</strong> Para dispositivos que se conectan por USB</li>
+     <li><strong>Drivers de almacenamiento:</strong> Para discos duros y unidades SSD</li>
+    </ul>
+    <p><strong>¿Cómo se instalan?</strong></p>
+    <p>Los sistemas operativos modernos como Windows 10/11 incluyen muchos drivers básicos y pueden descargar automáticamente los necesarios cuando conectas un nuevo dispositivo. Sin embargo, a veces necesitas descargar drivers específicos del sitio web del fabricante para obtener todas las funciones del dispositivo.</p>
+    <p><strong>Problemas comunes:</strong></p>
+    <p>Cuando un dispositivo no funciona correctamente, a menudo el problema es un driver desactualizado, corrupto o faltante. Los síntomas incluyen dispositivos que no se reconocen, funcionamiento lento, o características que no están disponibles.</p>
+    <div class="quiz-section">
+     <h3>Evaluación - Drivers o Controladores (5 puntos)</h3>
+     <div class="question">
+      <p>1. ¿Qué son los drivers o controladores?</p><label><input type="radio" name="q1-drivers" value="a"> Programas para navegar en internet</label> <label><input type="radio" name="q1-drivers" value="b"> Programas especiales que traducen entre el sistema operativo y los dispositivos de hardware</label> <label><input type="radio" name="q1-drivers" value="c"> Juegos de computadora</label> <label><input type="radio" name="q1-drivers" value="d"> Archivos de música</label>
+     </div>
+     <div class="question">
+      <p>2. ¿Por qué son necesarios los drivers?</p><label><input type="radio" name="q2-drivers" value="a"> Para hacer la computadora más rápida</label> <label><input type="radio" name="q2-drivers" value="b"> Porque cada dispositivo tiene su propia forma de funcionar y necesita instrucciones específicas</label> <label><input type="radio" name="q2-drivers" value="c"> Para cambiar el color de la pantalla</label> <label><input type="radio" name="q2-drivers" value="d"> Para ahorrar electricidad</label>
+     </div>
+     <div class="question">
+      <p>3. ¿Cuál es un ejemplo de driver de video?</p><label><input type="radio" name="q3-drivers" value="a"> Microsoft Word</label> <label><input type="radio" name="q3-drivers" value="b"> Drivers para tarjetas gráficas NVIDIA o AMD</label> <label><input type="radio" name="q3-drivers" value="c"> Google Chrome</label> <label><input type="radio" name="q3-drivers" value="d"> Calculadora</label>
+     </div>
+     <div class="question">
+      <p>4. ¿Cómo instalan drivers los sistemas operativos modernos?</p><label><input type="radio" name="q4-drivers" value="a"> Nunca los instalan automáticamente</label> <label><input type="radio" name="q4-drivers" value="b"> Incluyen muchos drivers básicos y pueden descargar automáticamente los necesarios</label> <label><input type="radio" name="q4-drivers" value="c"> Solo funcionan con un tipo de dispositivo</label> <label><input type="radio" name="q4-drivers" value="d"> Requieren siempre instalación manual</label>
+     </div>
+     <div class="question">
+      <p>5. ¿Cuál puede ser la causa cuando un dispositivo no funciona correctamente?</p><label><input type="radio" name="q5-drivers" value="a"> La computadora tiene muchos archivos</label> <label><input type="radio" name="q5-drivers" value="b"> Un driver desactualizado, corrupto o faltante</label> <label><input type="radio" name="q5-drivers" value="c"> Hay demasiados programas abiertos</label> <label><input type="radio" name="q5-drivers" value="d"> La pantalla es muy grande</label>
+     </div><button class="evaluate-btn" onclick="evaluateQuiz('drivers', ['b','b','b','b','b'])">Evaluar</button>
+     <div id="result-drivers" class="result" style="display: none;"></div>
+    </div>
+   </section>
+   <section id="mantenimiento-hw" class="content">
+    <h2>Mantenimiento de Hardware</h2>
+    <p>El mantenimiento de hardware se refiere al cuidado y limpieza de las partes físicas de la computadora para mantenerlas funcionando correctamente y prolongar su vida útil. Es como el mantenimiento que le das a tu bicicleta o carro para que sigan funcionando bien.</p>
+    <p><strong>¿Por qué es importante?</strong></p>
+    <p>Con el tiempo, las computadoras acumulan polvo, se calientan más, y sus componentes se desgastan. Un buen mantenimiento previene fallas, mejora el rendimiento y evita reparaciones costosas. Es más barato prevenir que reparar.</p>
+    <p><strong>Tipos de mantenimiento de hardware:</strong></p>
+    <p><strong>Mantenimiento Preventivo:</strong></p>
+    <ul>
+     <li><strong>Limpieza externa:</strong> Limpiar el teclado, mouse, monitor y carcasa con productos apropiados</li>
+     <li><strong>Limpieza interna:</strong> Remover el polvo del interior usando aire comprimido</li>
+     <li><strong>Verificación de cables:</strong> Revisar que todas las conexiones estén firmes</li>
+     <li><strong>Limpieza de ventiladores:</strong> Asegurar que los ventiladores giren libremente</li>
+     <li><strong>Revisión de temperatura:</strong> Verificar que la computadora no se sobrecaliente</li>
+    </ul>
+    <p><strong>Mantenimiento Correctivo:</strong></p>
+    <ul>
+     <li>Reemplazar componentes dañados (ventiladores, memoria RAM, disco duro)</li>
+     <li>Reparar conexiones sueltas o dañadas</li>
+     <li>Cambiar pasta térmica del procesador</li>
+     <li>Reemplazar fuentes de poder defectuosas</li>
+    </ul>
+    <p><strong>Herramientas básicas necesarias:</strong></p>
+    <ul>
+     <li>Destornilladores de diferentes tamaños</li>
+     <li>Aire comprimido o sopladora</li>
+     <li>Pulsera antiestática</li>
+     <li>Paños de microfibra</li>
+     <li>Alcohol isopropílico</li>
+     <li>Multímetro básico</li>
+    </ul>
+    <p><strong>Frecuencia recomendada:</strong></p>
+    <p>La limpieza externa debe hacerse semanalmente, la limpieza interna cada 3-6 meses dependiendo del ambiente, y las revisiones generales cada 6-12 meses por un técnico especializado.</p>
+    <div class="quiz-section">
+     <h3>Evaluación - Mantenimiento de Hardware (5 puntos)</h3>
+     <div class="question">
+      <p>1. ¿Qué es el mantenimiento de hardware?</p><label><input type="radio" name="q1-hw" value="a"> Instalar nuevos programas</label> <label><input type="radio" name="q1-hw" value="b"> El cuidado y limpieza de las partes físicas de la computadora</label> <label><input type="radio" name="q1-hw" value="c"> Navegar en internet</label> <label><input type="radio" name="q1-hw" value="d"> Crear documentos</label>
+     </div>
+     <div class="question">
+      <p>2. ¿Por qué es importante el mantenimiento preventivo?</p><label><input type="radio" name="q2-hw" value="a"> Para cambiar el color de la computadora</label> <label><input type="radio" name="q2-hw" value="b"> Previene fallas, mejora el rendimiento y evita reparaciones costosas</label> <label><input type="radio" name="q2-hw" value="c"> Para instalar más programas</label> <label><input type="radio" name="q2-hw" value="d"> Para usar menos electricidad</label>
+     </div>
+     <div class="question">
+      <p>3. ¿Qué incluye la limpieza externa de una computadora?</p><label><input type="radio" name="q3-hw" value="a"> Solo limpiar la pantalla</label> <label><input type="radio" name="q3-hw" value="b"> Limpiar el teclado, mouse, monitor y carcasa con productos apropiados</label> <label><input type="radio" name="q3-hw" value="c"> Solo desconectar cables</label> <label><input type="radio" name="q3-hw" value="d"> Cambiar el sistema operativo</label>
+     </div>
+     <div class="question">
+      <p>4. ¿Cuál es una herramienta básica para mantenimiento de hardware?</p><label><input type="radio" name="q4-hw" value="a"> Un programa antivirus</label> <label><input type="radio" name="q4-hw" value="b"> Aire comprimido para limpiar el polvo interno</label> <label><input type="radio" name="q4-hw" value="c"> Un navegador web</label> <label><input type="radio" name="q4-hw" value="d"> Una aplicación de música</label>
+     </div>
+     <div class="question">
+      <p>5. ¿Con qué frecuencia se recomienda hacer limpieza interna?</p><label><input type="radio" name="q5-hw" value="a"> Todos los días</label> <label><input type="radio" name="q5-hw" value="b"> Cada 3-6 meses dependiendo del ambiente</label> <label><input type="radio" name="q5-hw" value="c"> Solo una vez al año</label> <label><input type="radio" name="q5-hw" value="d"> Nunca es necesario</label>
+     </div><button class="evaluate-btn" onclick="evaluateQuiz('mantenimiento-hw', ['b','b','b','b','b'])">Evaluar</button>
+     <div id="result-mantenimiento-hw" class="result" style="display: none;"></div>
+    </div>
+   </section>
+   <section id="mantenimiento-sw" class="content">
+    <h2>Mantenimiento de Software</h2>
+    <p>El mantenimiento de software se refiere al cuidado y optimización de los programas y el sistema operativo de la computadora para mantenerlos funcionando de manera eficiente y segura. Es como mantener ordenada tu habitación y tus libros para encontrar todo fácilmente.</p>
+    <p><strong>¿Por qué es necesario?</strong></p>
+    <p>Con el uso diario, las computadoras acumulan archivos temporales, programas innecesarios, y pueden infectarse con virus. El software también se desactualiza, lo que puede crear vulnerabilidades de seguridad y problemas de rendimiento.</p>
+    <p><strong>Tipos de mantenimiento de software:</strong></p>
+    <p><strong>Mantenimiento Preventivo:</strong></p>
+    <ul>
+     <li><strong>Actualizaciones:</strong> Mantener el sistema operativo y programas actualizados</li>
+     <li><strong>Antivirus:</strong> Ejecutar análisis regulares para detectar malware</li>
+     <li><strong>Limpieza de archivos:</strong> Eliminar archivos temporales y basura</li>
+     <li><strong>Desfragmentación:</strong> Organizar los archivos en el disco duro (en discos mecánicos)</li>
+     <li><strong>Respaldos:</strong> Crear copias de seguridad de archivos importantes</li>
+     <li><strong>Limpieza del registro:</strong> Eliminar entradas obsoletas del registro de Windows</li>
+    </ul>
+    <p><strong>Mantenimiento Correctivo:</strong></p>
+    <ul>
+     <li>Reparar archivos del sistema dañados</li>
+     <li>Eliminar virus y malware detectados</li>
+     <li>Reinstalar programas que no funcionan correctamente</li>
+     <li>Recuperar archivos perdidos o dañados</li>
+     <li>Reparar errores del sistema operativo</li>
+    </ul>
+    <p><strong>Herramientas útiles:</strong></p>
+    <ul>
+     <li><strong>Antivirus:</strong> Windows Defender, Avast, Norton</li>
+     <li><strong>Limpiadores:</strong> CCleaner, Disk Cleanup de Windows</li>
+     <li><strong>Desfragmentadores:</strong> Herramienta integrada de Windows</li>
+     <li><strong>Respaldo:</strong> Windows Backup, Google Drive, OneDrive</li>
+     <li><strong>Monitoreo:</strong> Task Manager, Resource Monitor</li>
+    </ul>
+    <p><strong>Buenas prácticas:</strong></p>
+    <p>Realizar mantenimiento semanal básico, mantener solo programas necesarios instalados, no descargar software de fuentes desconocidas, y crear respaldos regulares de información importante.</p>
+    <div class="quiz-section">
+     <h3>Evaluación - Mantenimiento de Software (5 puntos)</h3>
+     <div class="question">
+      <p>1. ¿Qué es el mantenimiento de software?</p><label><input type="radio" name="q1-sw" value="a"> Limpiar físicamente la computadora</label> <label><input type="radio" name="q1-sw" value="b"> El cuidado y optimización de los programas y sistema operativo</label> <label><input type="radio" name="q1-sw" value="c"> Cambiar el hardware</label> <label><input type="radio" name="q1-sw" value="d"> Comprar una computadora nueva</label>
+     </div>
+     <div class="question">
+      <p>2. ¿Por qué es importante mantener actualizados los programas?</p><label><input type="radio" name="q2-sw" value="a"> Para cambiar su apariencia</label> <label><input type="radio" name="q2-sw" value="b"> Para evitar vulnerabilidades de seguridad y problemas de rendimiento</label> <label><input type="radio" name="q2-sw" value="c"> Para que ocupen más espacio</label> <label><input type="radio" name="q2-sw" value="d"> Para que sean más lentos</label>
+     </div>
+     <div class="question">
+      <p>3. ¿Qué hace la desfragmentación?</p><label><input type="radio" name="q3-sw" value="a"> Borra todos los archivos</label> <label><input type="radio" name="q3-sw" value="b"> Organiza los archivos en el disco duro para mejorar el rendimiento</label> <label><input type="radio" name="q3-sw" value="c"> Instala nuevos programas</label> <label><input type="radio" name="q3-sw" value="d"> Cambia el sistema operativo</label>
+     </div>
+     <div class="question">
+      <p>4. ¿Cuál es un ejemplo de herramienta antivirus mencionada?</p><label><input type="radio" name="q4-sw" value="a"> Microsoft Word</label> <label><input type="radio" name="q4-sw" value="b"> Windows Defender</label> <label><input type="radio" name="q4-sw" value="c"> Google Chrome</label> <label><input type="radio" name="q4-sw" value="d"> Adobe Photoshop</label>
+     </div>
+     <div class="question">
+      <p>5. ¿Qué incluye el mantenimiento preventivo de software?</p><label><input type="radio" name="q5-sw" value="a"> Solo instalar juegos nuevos</label> <label><input type="radio" name="q5-sw" value="b"> Actualizaciones, análisis antivirus, limpieza de archivos y respaldos</label> <label><input type="radio" name="q5-sw" value="c"> Solo cambiar el fondo de pantalla</label> <label><input type="radio" name="q5-sw" value="d"> Desconectar internet</label>
+     </div><button class="evaluate-btn" onclick="evaluateQuiz('mantenimiento-sw', ['b','b','b','b','b'])">Evaluar</button>
+     <div id="result-mantenimiento-sw" class="result" style="display: none;"></div>
+    </div>
+   </section>
+   <section id="interfaces" class="content">
+    <h2>Interfaces de Conexión: Entrada y Salida</h2>
+    <p>Las interfaces de conexión son los "puertos" o conectores que permiten que diferentes dispositivos se comuniquen con la computadora. Son como las puertas y ventanas de una casa: permiten que las cosas entren y salgan. Se dividen en dispositivos de entrada (que envían información a la computadora) y dispositivos de salida (que reciben información de la computadora).</p>
+    <p><strong>Dispositivos de Entrada:</strong></p>
+    <p>Son los que usas para darle información o instrucciones a la computadora:</p>
+    <ul>
+     <li><strong>Teclado:</strong> Para escribir texto y comandos</li>
+     <li><strong>Mouse:</strong> Para señalar, hacer clic y navegar</li>
+     <li><strong>Micrófono:</strong> Para grabar sonido y dar comandos de voz</li>
+     <li><strong>Cámara web:</strong> Para capturar video e imágenes</li>
+     <li><strong>Escáner:</strong> Para digitalizar documentos y fotos</li>
+     <li><strong>Pantalla táctil:</strong> Para tocar y controlar directamente</li>
+     <li><strong>Joystick/Gamepad:</strong> Para juegos</li>
+    </ul>
+    <p><strong>Dispositivos de Salida:</strong></p>
+    <p>Son los que la computadora usa para darte información:</p>
+    <ul>
+     <li><strong>Monitor:</strong> Para mostrar imágenes, texto y videos</li>
+     <li><strong>Altavoces/Audífonos:</strong> Para reproducir sonidos y música</li>
+     <li><strong>Impresora:</strong> Para crear copias físicas en papel</li>
+     <li><strong>Proyector:</strong> Para mostrar la pantalla en una superficie grande</li>
+    </ul>
+    <p><strong>Tipos de Interfaces Físicas:</strong></p>
+    <ul>
+     <li><strong>USB (Universal Serial Bus):</strong> El más común, para mouse, teclados, memorias</li>
+     <li><strong>HDMI:</strong> Para conectar monitores y TVs con alta calidad</li>
+     <li><strong>Audio Jack (3.5mm):</strong> Para audífonos y micrófonos</li>
+     <li><strong>Ethernet:</strong> Para conexión de red por cable</li>
+     <li><strong>WiFi/Bluetooth:</strong> Conexiones inalámbricas</li>
+     <li><strong>USB-C:</strong> Versión moderna de USB, más rápida y versátil</li>
+    </ul>
+    <p>Cada interfaz tiene características específicas como velocidad de transferencia, tipo de datos que maneja, y distancia máxima de conexión. La elección de la interfaz correcta afecta el rendimiento y la funcionalidad del dispositivo conectado.</p>
+    <div class="quiz-section">
+     <h3>Evaluación - Interfaces de Conexión (5 puntos)</h3>
+     <div class="question">
+      <p>1. ¿Qué son las interfaces de conexión?</p><label><input type="radio" name="q1-interfaces" value="a"> Programas de computadora</label> <label><input type="radio" name="q1-interfaces" value="b"> Los puertos o conectores que permiten que dispositivos se comuniquen con la computadora</label> <label><input type="radio" name="q1-interfaces" value="c"> Tipos de archivos</label> <label><input type="radio" name="q1-interfaces" value="d"> Páginas web</label>
+     </div>
+     <div class="question">
+      <p>2. ¿Cuál de estos es un dispositivo de entrada?</p><label><input type="radio" name="q2-interfaces" value="a"> Monitor</label> <label><input type="radio" name="q2-interfaces" value="b"> Altavoces</label> <label><input type="radio" name="q2-interfaces" value="c"> Teclado</label> <label><input type="radio" name="q2-interfaces" value="d"> Impresora</label>
+     </div>
+     <div class="question">
+      <p>3. ¿Cuál de estos es un dispositivo de salida?</p><label><input type="radio" name="q3-interfaces" value="a"> Mouse</label> <label><input type="radio" name="q3-interfaces" value="b"> Micrófono</label> <label><input type="radio" name="q3-interfaces" value="c"> Monitor</label> <label><input type="radio" name="q3-interfaces" value="d"> Cámara web</label>
+     </div>
+     <div class="question">
+      <p>4. ¿Para qué se usa principalmente la interfaz HDMI?</p><label><input type="radio" name="q4-interfaces" value="a"> Para conectar el mouse</label> <label><input type="radio" name="q4-interfaces" value="b"> Para conectar monitores y TVs con alta calidad</label> <label><input type="radio" name="q4-interfaces" value="c"> Para cargar la batería</label> <label><input type="radio" name="q4-interfaces" value="d"> Para conectar audífonos</label>
+     </div>
+     <div class="question">
+      <p>5. ¿Cuál es la interfaz más común para conectar mouse, teclados y memorias?</p><label><input type="radio" name="q5-interfaces" value="a"> HDMI</label> <label><input type="radio" name="q5-interfaces" value="b"> Ethernet</label> <label><input type="radio" name="q5-interfaces" value="c"> USB</label> <label><input type="radio" name="q5-interfaces" value="d"> Audio Jack</label>
+     </div><button class="evaluate-btn" onclick="evaluateQuiz('interfaces', ['b','c','c','b','c'])">Evaluar</button>
+     <div id="result-interfaces" class="result" style="display: none;"></div>
+    </div>
+   </section>
+   <section id="unidades-medida" class="content">
+    <h2>Unidades de Información de Medida Digital</h2>
+    <p>En el mundo digital, la información se mide en unidades específicas, similar a como medimos distancias en metros o peso en kilogramos. La unidad más pequeña de información digital es el "bit", y a partir de ahí se forman unidades más grandes.</p>
+    <p><strong>La unidad básica - El Bit:</strong></p>
+    <p>Un bit (binary digit) es la unidad más pequeña de información en una computadora. Puede tener solo dos valores: 0 o 1 (como un interruptor que está encendido o apagado). Es la base de todo el sistema digital.</p>
+    <p><strong>El Byte:</strong></p>
+    <p>Un byte está formado por 8 bits. Es la unidad básica que las computadoras usan para representar un carácter (como una letra, número o símbolo). Por ejemplo, la letra "A" ocupa 1 byte.</p>
+    <p><strong>Unidades más grandes:</strong></p>
+    <ul>
+     <li><strong>Kilobyte (KB):</strong> 1,024 bytes - Un documento de texto pequeño</li>
+     <li><strong>Megabyte (MB):</strong> 1,024 KB - Una canción en MP3 o varias fotos</li>
+     <li><strong>Gigabyte (GB):</strong> 1,024 MB - Una película o muchas canciones</li>
+     <li><strong>Terabyte (TB):</strong> 1,024 GB - Miles de películas o millones de fotos</li>
+     <li><strong>Petabyte (PB):</strong> 1,024 TB - Usado en grandes centros de datos</li>
+    </ul>
+    <p><strong>¿Por qué 1,024 y no 1,000?</strong></p>
+    <p>Las computadoras trabajan en sistema binario (base 2), no decimal (base 10). 1,024 es 2^10, que es más natural para las computadoras que 1,000.</p>
+    <p><strong>Ejemplos prácticos de tamaños:</strong></p>
+    <ul>
+     <li>Un mensaje de texto: pocos bytes</li>
+     <li>Una foto de teléfono: 2-5 MB</li>
+     <li>Una canción: 3-5 MB</li>
+     <li>Una película HD: 4-8 GB</li>
+     <li>Un videojuego moderno: 50-100 GB</li>
+     <li>Disco duro de computadora: 500 GB - 2 TB</li>
+    </ul>
+    <p>Entender estas unidades te ayuda a saber cuánto espacio necesitas para guardar archivos, cuánta memoria RAM requiere un programa, o qué tan rápida es tu conexión a internet.</p>
+    <div class="quiz-section">
+     <h3>Evaluación - Unidades de Medida Digital (5 puntos)</h3>
+     <div class="question">
+      <p>1. ¿Cuál es la unidad más pequeña de información digital?</p><label><input type="radio" name="q1-unidades" value="a"> Byte</label> <label><input type="radio" name="q1-unidades" value="b"> Bit</label> <label><input type="radio" name="q1-unidades" value="c"> Kilobyte</label> <label><input type="radio" name="q1-unidades" value="d"> Megabyte</label>
+     </div>
+     <div class="question">
+      <p>2. ¿Cuántos bits forman un byte?</p><label><input type="radio" name="q2-unidades" value="a"> 4 bits</label> <label><input type="radio" name="q2-unidades" value="b"> 8 bits</label> <label><input type="radio" name="q2-unidades" value="c"> 16 bits</label> <label><input type="radio" name="q2-unidades" value="d"> 32 bits</label>
+     </div>
+     <div class="question">
+      <p>3. ¿Cuántos bytes tiene un kilobyte?</p><label><input type="radio" name="q3-unidades" value="a"> 1,000 bytes</label> <label><input type="radio" name="q3-unidades" value="b"> 1,024 bytes</label> <label><input type="radio" name="q3-unidades" value="c"> 512 bytes</label> <label><input type="radio" name="q3-unidades" value="d"> 2,048 bytes</label>
+     </div>
+     <div class="question">
+      <p>4. ¿Por qué las computadoras usan 1,024 en lugar de 1,000?</p><label><input type="radio" name="q4-unidades" value="a"> Es más fácil de recordar</label> <label><input type="radio" name="q4-unidades" value="b"> Porque trabajan en sistema binario (base 2) y 1,024 es 2^10</label> <label><input type="radio" name="q4-unidades" value="c"> Es un número más bonito</label> <label><input type="radio" name="q4-unidades" value="d"> No hay razón específica</label>
+     </div>
+     <div class="question">
+      <p>5. ¿Aproximadamente cuánto espacio ocupa una película HD?</p><label><input type="radio" name="q5-unidades" value="a"> 2-5 MB</label> <label><input type="radio" name="q5-unidades" value="b"> 4-8 GB</label> <label><input type="radio" name="q5-unidades" value="c"> 50-100 GB</label> <label><input type="radio" name="q5-unidades" value="d"> 1-2 TB</label>
+     </div><button class="evaluate-btn" onclick="evaluateQuiz('unidades-medida', ['b','b','b','b','b'])">Evaluar</button>
+     <div id="result-unidades-medida" class="result" style="display: none;"></div>
+    </div>
+   </section>
+   <section id="sistema-binario" class="content">
+    <h2>Sistema Binario y Código ASCII</h2>
+    <p>El sistema binario es el "idioma" que entienden las computadoras. Mientras nosotros usamos el sistema decimal (0-9), las computadoras solo entienden dos estados: encendido (1) y apagado (0). Es como comunicarse usando solo dos palabras: "sí" y "no".</p>
+    <p><strong>¿Cómo funciona el sistema binario?</strong></p>
+    <p>En el sistema decimal, cada posición representa una potencia de 10 (unidades, decenas, centenas). En binario, cada posición representa una potencia de 2:</p>
+    <ul>
+     <li>Posición 1: 2^0 = 1</li>
+     <li>Posición 2: 2^1 = 2</li>
+     <li>Posición 3: 2^2 = 4</li>
+     <li>Posición 4: 2^3 = 8</li>
+     <li>Y así sucesivamente...</li>
+    </ul>
+    <p><strong>Ejemplos de conversión:</strong></p>
+    <ul>
+     <li>Decimal 5 = Binario 101 (4+0+1)</li>
+     <li>Decimal 8 = Binario 1000 (8+0+0+0)</li>
+     <li>Decimal 15 = Binario 1111 (8+4+2+1)</li>
+    </ul>
+    <p><strong>¿Qué es el código ASCII?</strong></p>
+    <p>ASCII (American Standard Code for Information Interchange) es un sistema que asigna un número único a cada letra, número y símbolo que usamos. Permite que las computadoras representen texto usando números binarios.</p>
+    <p><strong>Ejemplos de código ASCII:</strong></p>
+    <ul>
+     <li>Letra 'A' = 65 en decimal = 01000001 en binario</li>
+     <li>Letra 'a' = 97 en decimal = 01100001 en binario</li>
+     <li>Número '0' = 48 en decimal = 00110000 en binario</li>
+     <li>Espacio ' ' = 32 en decimal = 00100000 en binario</li>
+     <li>Signo '!' = 33 en decimal = 00100001 en binario</li>
+    </ul>
+    <p><strong>¿Cómo se relacionan?</strong></p>
+    <p>Cuando escribes la palabra "Hola" en tu computadora:</p>
+    <ol>
+     <li>La computadora convierte cada letra a su código ASCII</li>
+     <li>H=72, o=111, l=108, a=97</li>
+     <li>Luego convierte cada número a binario</li>
+     <li>Finalmente almacena esos unos y ceros en la memoria</li>
+    </ol>
+    <p>Este proceso permite que las computadoras procesen, almacenen y transmitan cualquier texto que escribamos, desde mensajes simples hasta documentos complejos.</p>
+    <div class="quiz-section">
+     <h3>Evaluación - Sistema Binario y ASCII (5 puntos)</h3>
+     <div class="question">
+      <p>1. ¿Qué valores puede tener un dígito en el sistema binario?</p><label><input type="radio" name="q1-binario" value="a"> 0 al 9</label> <label><input type="radio" name="q1-binario" value="b"> Solo 0 y 1</label> <label><input type="radio" name="q1-binario" value="c"> 1 al 10</label> <label><input type="radio" name="q1-binario" value="d"> Cualquier número</label>
+     </div>
+     <div class="question">
+      <p>2. ¿Cuál es el equivalente binario del número decimal 8?</p><label><input type="radio" name="q2-binario" value="a"> 111</label> <label><input type="radio" name="q2-binario" value="b"> 1000</label> <label><input type="radio" name="q2-binario" value="c"> 1010</label> <label><input type="radio" name="q2-binario" value="d"> 1100</label>
+     </div>
+     <div class="question">
+      <p>3. ¿Qué es el código ASCII?</p><label><input type="radio" name="q3-binario" value="a"> Un tipo de computadora</label> <label><input type="radio" name="q3-binario" value="b"> Un sistema que asigna un número único a cada letra, número y símbolo</label> <label><input type="radio" name="q3-binario" value="c"> Un programa de internet</label> <label><input type="radio" name="q3-binario" value="d"> Un tipo de archivo</label>
+     </div>
+     <div class="question">
+      <p>4. ¿Cuál es el código ASCII de la letra 'A'?</p><label><input type="radio" name="q4-binario" value="a"> 32</label> <label><input type="radio" name="q4-binario" value="b"> 48</label> <label><input type="radio" name="q4-binario" value="c"> 65</label> <label><input type="radio" name="q4-binario" value="d"> 97</label>
+     </div>
+     <div class="question">
+      <p>5. ¿Qué hace la computadora cuando escribes texto?</p><label><input type="radio" name="q5-binario" value="a"> Lo guarda directamente como letras</label> <label><input type="radio" name="q5-binario" value="b"> Convierte cada letra a código ASCII y luego a binario</label> <label><input type="radio" name="q5-binario" value="c"> Solo usa números decimales</label> <label><input type="radio" name="q5-binario" value="d"> No procesa el texto</label>
+     </div><button class="evaluate-btn" onclick="evaluateQuiz('sistema-binario', ['b','b','b','c','b'])">Evaluar</button>
+     <div id="result-sistema-binario" class="result" style="display: none;"></div>
+    </div>
+   </section>
+  </main>
+  <script>
+        // Configuration object for Element SDK
+        const defaultConfig = {
+            main_title: "Plataforma Educativa de Informática",
+            subtitle: "Aprende los conceptos fundamentales de la informática de manera interactiva"
+        };
+
+        // Element SDK implementation
+        const element = {
+            defaultConfig: defaultConfig,
+            
+            render: async function(config) {
+                const titleElement = document.getElementById('main-title');
+                const subtitleElement = document.getElementById('subtitle');
+                
+                if (titleElement) {
+                    titleElement.textContent = config.main_title || defaultConfig.main_title;
+                }
+                if (subtitleElement) {
+                    subtitleElement.textContent = config.subtitle || defaultConfig.subtitle;
+                }
+            },
+            
+            mapToCapabilities: function(config) {
+                return {
+                    recolorables: [],
+                    borderables: [],
+                    fontEditable: undefined,
+                    fontSizeable: undefined
+                };
+            },
+            
+            mapToEditPanelValues: function(config) {
+                return new Map([
+                    ["main_title", config.main_title || defaultConfig.main_title],
+                    ["subtitle", config.subtitle || defaultConfig.subtitle]
+                ]);
+            }
+        };
+
+        // Initialize Element SDK when available
+        if (window.elementSdk) {
+            window.elementSdk.init(element);
+        }
+
+        // Tab functionality
+        function showTab(tabId) {
+            // Hide all content sections
+            const contents = document.querySelectorAll('.content');
+            contents.forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            // Remove active class from all tabs
+            const tabs = document.querySelectorAll('.tab');
+            tabs.forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Show selected content
+            const selectedContent = document.getElementById(tabId);
+            if (selectedContent) {
+                selectedContent.classList.add('active');
+            }
+            
+            // Add active class to clicked tab
+            event.target.classList.add('active');
+        }
+
+        // Quiz evaluation function
+        function evaluateQuiz(sectionId, correctAnswers) {
+            const questions = document.querySelectorAll(`#${sectionId} .question`);
+            let score = 0;
+            let totalQuestions = correctAnswers.length;
+            
+            questions.forEach((question, index) => {
+                const selectedAnswer = question.querySelector('input[type="radio"]:checked');
+                if (selectedAnswer && selectedAnswer.value === correctAnswers[index]) {
+                    score++;
+                }
+            });
+            
+            // Display result
+            const resultDiv = document.getElementById(`result-${sectionId}`);
+            resultDiv.style.display = 'block';
+            
+            let resultClass = '';
+            let resultMessage = '';
+            
+            if (score === 5) {
+                resultClass = 'excellent';
+                resultMessage = `¡Excelente! 🎉 Obtuviste ${score}/5 puntos. ¡Dominas completamente este tema!`;
+            } else if (score >= 3) {
+                resultClass = 'good';
+                resultMessage = `¡Bien hecho! 👍 Obtuviste ${score}/5 puntos. Tienes un buen entendimiento del tema.`;
+            } else {
+                resultClass = 'needs-improvement';
+                resultMessage = `Necesitas repasar 📚 Obtuviste ${score}/5 puntos. Te recomiendo leer nuevamente el contenido.`;
+            }
+            
+            resultDiv.className = `result ${resultClass}`;
+            resultDiv.innerHTML = resultMessage;
+            
+            // Scroll to result
+            resultDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+    </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'99017f2cf665b0bf',t:'MTc2MDcyMTk0Mi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
